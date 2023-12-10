@@ -1,27 +1,41 @@
-import { Box, Stack, TextField, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 import { CustomContainer } from "../components/CustomContainer";
+import { useTheme } from "@emotion/react";
+import { CustomTextField } from "../components/CustomTextField";
 
 export const Signup = () => {
+  const theme = useTheme();
+
   return (
     <CustomContainer>
-      <Stack direction="row">
-        <Box flex="0.6"></Box>
+      {/* Showcase */}
+      <Stack
+        height="100%"
+        width="100%"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Stack
+          width="60%"
+          p="1rem"
+          sx={{
+            border: `2px solid ${theme.palette.secondary.main}`,
+          }}
+        >
+          {/* Header */}
+          <Typography
+            variant="h2"
+            textAlign="center"
+            color={theme.palette.secondary.main}
+          >
+            Sign Up
+          </Typography>
 
-        <Box flex="0.4">
-          {/* Sign up form */}
-          <Stack alignItems="center" justifyContent="center">
-            {/* Header */}
-            <Typography variant="h2">Sign Up</Typography>
-
-            {/* Form for signup */}
-            <Stack>
-              <Box>
-                <TextField label="Enter email" />
-              </Box>
-            </Stack>
-          </Stack>
-        </Box>
+          <Box>
+            <CustomTextField inputLabel="Enter email" />
+          </Box>
+        </Stack>
       </Stack>
     </CustomContainer>
   );

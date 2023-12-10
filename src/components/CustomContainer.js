@@ -1,21 +1,21 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import React from "react";
 
 export const CustomContainer = ({ children }) => {
   const theme = useTheme();
 
-  // Access theme properties
-  console.log("theme,", theme)
-
   return (
-    <Box
+    <Stack
       height="100vh"
       width="100vw"
-      
+      p="2rem 0"
+      bgcolor={theme.palette.primary.dark}
+      alignItems="center"
+      justifyContent="center"
     >
       <Box height="100%" width="80%">
         {children}
       </Box>
-    </Box>
+    </Stack>
   );
 };
