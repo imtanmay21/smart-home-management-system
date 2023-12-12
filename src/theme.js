@@ -18,16 +18,29 @@ const theme = createTheme({
   },
 
   components: {
+    // Styling the Mui Button
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          height: 50,
+          width: "100%",
+          transition: "0.2s ease-in all",
+
+          "&:hover": {
+            backgroundColor: "#537FE7",
+            opacity: 0.9
+          }
+        },
+      },
+    },
 
     // Styling for the MUI Textfield label
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          '&': {
-            color: "#EEEEEE"
-          }
-        }
-      }
+          color: "#EEEEEE",
+        },
+      },
     },
 
     // Outlined Input styling for MuiOutlinedInput
@@ -35,27 +48,28 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#EEEEEE"
-          }
-        }
-      }
+            borderColor: "#EEEEEE",
+          },
+        },
+      },
     },
 
     // Styling for the text field
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& fieldset': {
+          width: "100%",
+          "& fieldset": {
             borderColor: "#EEEEEE",
           },
-          '& input': {
-            color: "#EEEEEE"
+          "& input": {
+            color: "#EEEEEE",
           },
-          '&::placeholder': {
-            color: "#EEEEEE"
-          }
-        }
-      }
+          "&::placeholder": {
+            color: "#EEEEEE",
+          },
+        },
+      },
     },
   },
 });
