@@ -12,44 +12,28 @@ export const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
-  // Form Validation
-  const validateInputFields = () => {
-    // Validate email field
-    const isEmailValid = email.toLowerCase().match(validEmailRegex);
+  // Validate input fields
+  const validateFields = () => {
+     // Validate email field
+     const isEmailValid = email.toLowerCase().match(validEmailRegex);
 
-    // Validate password field
-    const isPasswordValid = password.length > 8
-
-    // Confirm password field
-    const isConfirmPasswordValid = password === confirmPassword
-
-    if (isEmailValid) {
-      setEmailError("Invalid Email Format")
+     if (!isEmailValid) {
+      setEmailError("Invalid Email Format");
     }
-
-    if (isPasswordValid) {
-      setPasswordError("Password should be greater than 8 characters")
-    }
-
-    if (isConfirmPasswordValid) {
-      setConfirmPasswordError("Passwords do not match")
-    }
-
-  };
+  }
 
   // Handle Sign up in the form
-  const signUpUser = (e) => {
+  const loginUser = (e) => {
     // Prevent default behaviour for sign up form
     e.preventDefault();
 
+    setEmailError("");
+
     // Validate form fields
-    validateInputFields()
+    validateFields()
   };
 
   return (
@@ -69,7 +53,7 @@ export const Login = () => {
             border: `2px solid ${theme.palette.secondary.main}`,
           }}
           component="form"
-          onSubmit={signUpUser}
+          onSubmit={loginUser}
         >
           {/* Header */}
           <Box>
@@ -88,6 +72,7 @@ export const Login = () => {
               label="Email"
               color="secondary"
               type="email"
+              error={emailError !== ""}
               onChange={(e) => setEmail(e.target.value)}
             />
           </Box>
@@ -103,7 +88,7 @@ export const Login = () => {
           </Box>
 
           <Box>
-            <Button variant="contained" onClick={signUpUser}>
+            <Button variant="contained" onClick={loginUser}>
               Log in
             </Button>
           </Box>

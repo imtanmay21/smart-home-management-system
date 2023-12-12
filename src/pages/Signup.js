@@ -1,24 +1,66 @@
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { CustomContainer } from "../components/CustomContainer";
+import { signUp } from "../queries/userQueries";
+
+const validEmailRegex =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const Signup = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  // Form Validation
+  const validateInputFields = () => {
+    // Validate email field
+    const isEmailValid = email.toLowerCase().match(validEmailRegex);
+
+    // Validate password field
+    const isPasswordValid = password.length > 8;
+
+    // Confirm password field
+    const isConfirmPasswordValid = password === confirmPassword;
+
+    if (!isEmailValid) {
+      setEmailError("Invalid Email Format");
+    }
+
+    if (!isPasswordValid) {
+      setPasswordError("Password should be greater than 8 characters");
+    }
+
+    if (!isConfirmPasswordValid) {
+      setConfirmPasswordError("Passwords do not match");
+    }
+
+    return isEmailValid && isPasswordValid && isConfirmPasswordValid;
+  };
+
   // Handle Sign up in the form
-  const signUpUser = (e) => {
+  const signUpUser = async (e) => {
     // Prevent default behaviour for sign up form
     e.preventDefault();
 
-    console.log("email", email);
-    console.log("password", password);
-    console.log("confirm password", confirmPassword);
+    // Set errors
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+
+    // Validate input fields
+    if (validateInputFields()) {
+      await signUp(email, password, dispatch);
+    }
   };
 
   return (
@@ -57,6 +99,7 @@ export const Signup = () => {
               label="Email"
               color="secondary"
               type="email"
+              error={emailError !== ""}
               onChange={(e) => setEmail(e.target.value)}
             />
           </Box>
@@ -67,6 +110,7 @@ export const Signup = () => {
               label="Password"
               color="secondary"
               type="password"
+              error={passwordError !== ""}
               onChange={(e) => setPassword(e.target.value)}
             />
           </Box>
@@ -77,6 +121,7 @@ export const Signup = () => {
               label="Confirm Password"
               color="secondary"
               type="password"
+              error={confirmPasswordError !== ""}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </Box>
