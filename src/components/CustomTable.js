@@ -1,5 +1,6 @@
 import { useTheme } from "@emotion/react";
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 
-export const CustomTable = ({ headers, items }) => {
+export const CustomTable = ({ headers, items, tableFor }) => {
   const theme = useTheme();
 
   return (

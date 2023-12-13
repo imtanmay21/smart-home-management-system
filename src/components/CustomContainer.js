@@ -12,6 +12,7 @@ export const CustomContainer = ({ children }) => {
       bgcolor={theme.palette.primary.dark}
       alignItems="center"
       justifyContent="center"
+      overflow="auto"
     >
       <Box height="100%" width="80%">
         {children}

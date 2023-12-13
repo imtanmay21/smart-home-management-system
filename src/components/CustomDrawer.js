@@ -17,6 +17,7 @@ import { useTheme } from "@emotion/react";
 import { Apartment, Kitchen, Person } from "@mui/icons-material";
 import { Profile } from "../pages/Profile";
 import { Locations } from "../pages/Locations";
+import { Devices } from "../pages/Devices";
 
 const drawerWidth = 240;
 
@@ -137,6 +138,7 @@ export const CustomDrawer = ({ window, mainComponent }) => {
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: "500px" }}>
         {showComponent === "Profile" && <Profile />}
         {showComponent === "Locations" && <Locations />}
+        {showComponent === "Devices" && <Devices />}
       </Box>
     </Box>
   );

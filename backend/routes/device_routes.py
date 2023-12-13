@@ -45,9 +45,9 @@ def get_active_devices_route():
 # Get all active devices of customer
 @device_blueprint.route('/all-active-devices', methods=['GET'])
 def get_all_active_devices_route():
-    customer_id = request.args.get('customer_id', type=int)
+    customer_id = request.args.get('customer_id', type=str)
 
-    if not customer_id or not isinstance(customer_id, int):
+    if not customer_id or not isinstance(customer_id, str):
         return jsonify({"error": "Invalid customer ID"}), 400
 
     try:
@@ -66,7 +66,7 @@ def add_new_device():
     device_type = data.get('device_type')
     model_number = data.get('model_number')
 
-    if not isinstance(customer_id, int) or not isinstance(location_id, int):
+    if not isinstance(customer_id, str) or not isinstance(location_id, int):
         return jsonify({'error': 'Invalid customer ID or location ID'}), 400
     if not isinstance(device_type, str) or not isinstance(model_number, str):
         return jsonify({'error': 'Invalid device type or model number'}), 400

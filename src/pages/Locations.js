@@ -1,17 +1,25 @@
 import {
   Box,
   Button,
+  InputLabel,
+  MenuItem,
   Modal,
+  Select,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { addLocation, getLocations } from "../queries/LocationQueries";
 import { CustomTable } from "../components/CustomTable";
 import { useTheme } from "@emotion/react";
 import moment from "moment";
+import {
+  addDevice,
+  fetchDeviceTypes,
+  fetchModelNumber,
+} from "../queries/DeviceQueries";
 
 const tableHeaders = [
   "LocationID",
@@ -27,6 +35,7 @@ const tableHeaders = [
 
 export const Locations = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.UserReducer);
 
   const [locations, setLocations] = useState([]);
@@ -40,11 +49,20 @@ export const Locations = () => {
   const [bedrooms, setBedrooms] = useState("");
   const [occupants, setOccupants] = useState("");
   const [open, setOpen] = useState(false);
+
+  // Add device statees
+  const modelRef = useRef();
+  const [deviceTypes, setDeviceTypes] = useState([]);
+  const [deviceModels, setDeviceModels] = useState([]);
+  const [selectedLocationID, setSelectedLocationID] = useState("");
+  const [selectedDeviceType, setSelectedDeviceType] = useState("AC");
+  const [selectedModelNumber, setSelectedModelNumber] = useState("");
+
   const handleClose = () => setOpen(false);
 
   const getLocationsOfUser = async () => {
     try {
-      const locations = await getLocations(user.userId);
+      const locations = await getLocations(user.userId, dispatch);
       setLocations(locations);
     } catch (e) {
       console.log(e);
@@ -76,7 +94,7 @@ export const Locations = () => {
 
         const isAdded = await addLocation(user.userId, locationData);
 
-        setOpen(false)
+        setOpen(false);
         if (isAdded) {
           getLocationsOfUser();
         }
@@ -86,9 +104,41 @@ export const Locations = () => {
     }
   };
 
+  const getDeviceTypes = async () => {
+    try {
+      const responseData = await fetchDeviceTypes();
+      setDeviceTypes(responseData);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     getLocationsOfUser();
+    getDeviceTypes();
   }, []);
+
+  const selectDeviceType = async (e) => {
+    setSelectedDeviceType(e.target.value);
+    const responseData = await fetchModelNumber(e.target.value);
+    setDeviceModels(responseData);
+  };
+
+
+  const addDeviceForLocation = async () => {
+    console.log("selected model number", selectedModelNumber);
+
+    try {
+      await addDevice(
+        user.userId,
+        selectedLocationID,
+        selectedDeviceType,
+        modelRef.current.value
+      );
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
 
   return (
     <Stack gap="2rem">
@@ -195,7 +245,11 @@ export const Locations = () => {
         LOCATIONS
       </Typography>
 
-      <CustomTable headers={tableHeaders} items={locations} />
+      <CustomTable
+        headers={tableHeaders}
+        items={locations}
+        tableFor="locations"
+      />
       <Stack alignItems="flex-end" justifyContent="center">
         <Button
           onClick={() => setOpen(true)}
@@ -204,6 +258,99 @@ export const Locations = () => {
         >
           Add Location
         </Button>
+      </Stack>
+
+      <Typography variant="h3" color="secondary" textAlign="center">
+        ADD DEVICE
+      </Typography>
+
+      <Stack alignItems="center" width="100%">
+        <Stack
+          width="30%"
+          border="1px solid #EEEEEE"
+          p="1rem"
+          // alignItems="center"
+          gap="1rem"
+        >
+          <Stack direction="row" alignItems="center" gap="1rem">
+            <InputLabel
+              sx={{ flex: 1 }}
+              htmlFor="locatio-select"
+              id="location-id"
+            >
+              Location ID
+            </InputLabel>
+            <select
+              value={selectedLocationID}
+              onChange={(e) => setSelectedLocationID(e.target.value)}
+              style={{
+                flex: 1,
+                border: "1px solid #EEEEEE",
+                backgroundColor: "transparent",
+                color: "#EEEEEE",
+                height: "30px",
+              }}
+            >
+              {locations.map((location) => (
+                <option value={location.LocationID}>
+                  {location.LocationID}
+                </option>
+              ))}
+            </select>
+          </Stack>
+          <Stack direction="row" alignItems="center" gap="1rem">
+            <InputLabel
+              sx={{ flex: 1 }}
+              htmlFor="location-select"
+              id="location-id"
+            >
+              Device Types
+            </InputLabel>
+            <select
+              value={selectedDeviceType}
+              onChange={(e) => selectDeviceType(e)}
+              style={{
+                flex: 1,
+                border: "1px solid #EEEEEE",
+                backgroundColor: "transparent",
+                color: "#EEEEEE",
+                height: "30px",
+              }}
+            >
+              {deviceTypes.map((deviceType) => (
+                <option value={deviceType.Type}>{deviceType.Type}</option>
+              ))}
+            </select>
+          </Stack>
+          <Stack direction="row" alignItems="center" gap="1rem">
+            <InputLabel
+              sx={{ flex: 1 }}
+              htmlFor="locatio-select"
+              id="location-id"
+            >
+              Model Number
+            </InputLabel>
+            <select
+              // onBlur={(e) => selectModelNumber(e)}
+              ref={modelRef}
+              style={{
+                flex: 1,
+                border: "1px solid #EEEEEE",
+                backgroundColor: "transparent",
+                color: "#EEEEEE",
+                height: "30px",
+              }}
+            >
+              {deviceModels.map((model) => (
+                <option value={model.ModelNumber}>{model.ModelNumber}</option>
+              ))}
+            </select>
+          </Stack>
+
+          <Button variant="contained" onClick={addDeviceForLocation}>
+            ADD DEVICE
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );

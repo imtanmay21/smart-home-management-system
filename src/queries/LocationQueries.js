@@ -5,7 +5,7 @@ const baseUrl = "http://127.0.0.1:5000";
 // ----------------------------------
 // ---------- GET LOCATIONS----------
 // ----------------------------------
-export const getLocations = async (userId) => {
+export const getLocations = async (userId, dispatch) => {
   const response = await axios.get(`${baseUrl}/locations/${userId}/list`)
 
   if (response.status === 200) {
