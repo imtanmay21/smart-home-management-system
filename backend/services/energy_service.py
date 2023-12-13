@@ -26,7 +26,9 @@ def get_comparative_energy_consumption_timebased(square_footage, occupants, star
         WHERE sl.SquareFootage BETWEEN :square_footage - 100 AND :square_footage + 100
         AND sl.Occupants = :occupants
         AND eu.Timestamp BETWEEN :start_date AND :end_date
+        AND ed.Status = 1
     """)
+    
     result = db.session.execute(sql_query, {
         'square_footage': square_footage, 
         'occupants': occupants, 
@@ -44,6 +46,7 @@ def get_comparative_energy_consumption(square_footage, occupants):
         JOIN ServiceLocations sl ON ed.LocationID = sl.LocationID
         WHERE sl.SquareFootage BETWEEN :square_footage - 100 AND :square_footage + 100
         AND sl.Occupants = :occupants
+        AND ed.Status = 1
     """)
     result = db.session.execute(sql_query, {
         'square_footage': square_footage, 

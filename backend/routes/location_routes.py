@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.location_service import get_service_locations, add_service_location
+from services.location_service import get_service_locations, add_service_location, update_service_location_status
 
 location_blueprint = Blueprint('location_blueprint', __name__)
 
@@ -23,3 +23,18 @@ def add_location(customer_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@location_blueprint.route('/update-location-status', methods=['POST'])
+def update_location_status():
+    data = request.json
+    location_id = data.get('location_id')
+    status = data.get('status')
+
+    if not isinstance(location_id, int):
+        return jsonify({'error': 'Invalid location ID'}), 400
+    if status not in [0, 1]:
+        return 'Invalid status', 400
+    try:
+        result = update_service_location_status(location_id, status)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
