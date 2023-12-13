@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router";
 
 import { auth } from "../config/firebaseConfig";
-import { Navigate, Route } from "react-router";
+import { CircularProgress, Stack } from "@mui/material";
+import { useTheme } from "@emotion/react";
 
-// Check if user is authenticated or not
-const isAuthenticated = () => {
-  // Check if user is authenticated
-  if (auth.currentUser) {
-    return true
-  } else {
-    return false
+export const PrivateRoute = ({ redirectTo = "/login", children }) => {
+  const theme = useTheme();
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <Stack
+        bgcolor={theme.palette.primary.dark}
+        alignItems="center"
+        justifyContent="center"
+        sx={{ height: "100vh", width: "100vw" }}
+      >
+        <CircularProgress color="primary" />
+      </Stack>
+    );
   }
-};
 
-export const PrivateRoute = ({ element, ...props }) => {
-  return isAuthenticated() ? (
-    <Route {...props} element={element} />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  if (user) {
+    return children ? children : <Outlet />;
+  } else {
+    return <Navigate to={redirectTo} />;
+  }
 };

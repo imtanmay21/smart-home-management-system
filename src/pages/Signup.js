@@ -1,7 +1,8 @@
 import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import { CustomContainer } from "../components/CustomContainer";
 import { signUp } from "../queries/userQueries";
@@ -12,10 +13,14 @@ const validEmailRegex =
 export const Signup = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [userAuthError, setUserAuthError] = useState("");
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -26,12 +31,15 @@ export const Signup = () => {
     // Validate email field
     const isEmailValid = email.toLowerCase().match(validEmailRegex);
 
+    console.log("is email valid", email)
+
     // Validate password field
     const isPasswordValid = password.length > 8;
 
     // Confirm password field
     const isConfirmPasswordValid = password === confirmPassword;
 
+    // Check if input fields is valid
     if (!isEmailValid) {
       setEmailError("Invalid Email Format");
     }
@@ -56,12 +64,27 @@ export const Signup = () => {
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
+    setUserAuthError("");
 
     // Validate input fields
     if (validateInputFields()) {
-      await signUp(email, password, dispatch);
+      try {
+        // Signup user
+        await signUp(email, password, dispatch);
+        
+        // Navigate to dashboard
+        navigation("/")
+      } catch (error) {
+        // Setup user auth error
+        setUserAuthError(error.message)
+      }
     }
   };
+
+  // Navigate the user to go to dashboard
+  useEffect(() => {
+
+  }, [])
 
   return (
     <CustomContainer>
@@ -107,6 +130,26 @@ export const Signup = () => {
           <Box>
             <TextField
               variant="outlined"
+              label="First Name"
+              color="secondary"
+              error={emailError !== ""}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </Box>
+
+          <Box>
+            <TextField
+              variant="outlined"
+              label="Last Name"
+              color="secondary"
+              error={emailError !== ""}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </Box>
+
+          <Box>
+            <TextField
+              variant="outlined"
               label="Password"
               color="secondary"
               type="password"
@@ -124,6 +167,12 @@ export const Signup = () => {
               error={confirmPasswordError !== ""}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+          </Box>
+
+          <Box>
+            <Typography variant="body1" color="error" textAlign="center">
+              {userAuthError}
+            </Typography>
           </Box>
 
           <Box>

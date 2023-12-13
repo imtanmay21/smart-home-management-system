@@ -8,7 +8,7 @@ import { UserActionTypes } from "../store/UserReducer/UserActionTypes";
 // ------------------
 // Signup user function
 // ------------------
-export const signUp= async (email, password, dispatch) => {
+export const signUp = async (email, password, dispatch) => {
   // Signup user on firebase
   const userCredential = await createUserWithEmailAndPassword(
     auth,
@@ -16,13 +16,14 @@ export const signUp= async (email, password, dispatch) => {
     password
   );
 
-  // Dispatch user data to the user reducer
-  dispatch({
-    type: UserActionTypes.SET_USER_DATA,
-    payload: { user: userCredential.user },
-  });
-};
+  console.log("user credential", userCredential.user)
 
+  // Dispatch user data to the user reducer
+  // dispatch({
+  //   type: UserActionTypes.SET_USER_DATA,
+  //   payload: { user: userCredential.user },
+  // });
+};
 
 // ------------------
 // Login user function

@@ -3,37 +3,53 @@ import { useTheme } from "@emotion/react";
 import React, { useState } from "react";
 
 import { CustomContainer } from "../components/CustomContainer";
+import { login } from "../queries/userQueries";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 const validEmailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const Login = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [emailError, setEmailError] = useState("");
+  const [userAuthError, setUserAuthError] = useState("");
 
   // Validate input fields
   const validateFields = () => {
-     // Validate email field
-     const isEmailValid = email.toLowerCase().match(validEmailRegex);
+    // Validate email field
+    const isEmailValid = email.toLowerCase().match(validEmailRegex);
 
-     if (!isEmailValid) {
+    if (!isEmailValid) {
       setEmailError("Invalid Email Format");
     }
-  }
+
+    return isEmailValid;
+  };
 
   // Handle Sign up in the form
-  const loginUser = (e) => {
+  const loginUser = async (e) => {
     // Prevent default behaviour for sign up form
     e.preventDefault();
 
     setEmailError("");
+    setUserAuthError("")
 
     // Validate form fields
-    validateFields()
+    if (validateFields()) {
+      try {
+        await login(email, password);
+        navigation("/")
+      } catch (error) {
+        setUserAuthError(error.message);
+      }
+    }
   };
 
   return (
@@ -85,6 +101,12 @@ export const Login = () => {
               type="password"
               onChange={(e) => setPassword(e.target.value)}
             />
+          </Box>
+
+          <Box>
+            <Typography variant="body1" color="error" textAlign="center">
+              {userAuthError}
+            </Typography>
           </Box>
 
           <Box>

@@ -1,7 +1,11 @@
 import React from 'react'
 
+import { CustomContainer } from "../components/CustomContainer"
+
 export const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+   <CustomContainer>
+
+   </CustomContainer> 
   )
 }
