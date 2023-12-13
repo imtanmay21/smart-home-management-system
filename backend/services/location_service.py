@@ -18,18 +18,28 @@ def add_service_location(customer_id, location_data):
         'bedrooms': location_data['Bedrooms'],
         'occupants': location_data['Occupants']
     })
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
     return {'message': 'Service location added successfully'}
 
 def get_service_locations(customer_id):
     sql_query = text("""
         SELECT LocationID, Apt_no, Street, City, State, Zip, StartDate, SquareFootage, Bedrooms, Occupants
         FROM ServiceLocations
-        WHERE CustomerID = :customer_id
+        WHERE CustomerID = :customer_id AND Status = 1
     """)
     result = db.session.execute(sql_query, {'customer_id': customer_id})
     locations = [{'LocationID': row[0], 'Apt_no': row[1], 'Street': row[2], 'City': row[3], 
                   'State': row[4], 'Zip': row[5], 'StartDate': row[6], 'SquareFootage': row[7],
                   'Bedrooms': row[8], 'Occupants': row[9]} for row in result]
     return locations
+
+def update_service_location_status(location_id, status):
+    sql_query = text("UPDATE ServiceLocations SET Status = :status WHERE LocationID = :location_id")
+    db.session.execute(sql_query, {'location_id': location_id, 'status': status})
+    db.session.commit()
+    return {'message': 'Service location status updated successfully'}
+
 

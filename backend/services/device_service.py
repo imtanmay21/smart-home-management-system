@@ -2,6 +2,36 @@ from sqlalchemy import text
 from datetime import datetime, timedelta
 from models import db
 
+def get_all_active_devices_of_customer(customer_id):
+    sql_query = text("""
+        SELECT ed.EnrolledDeviceID, d.Type, d.ModelNumber, sl.LocationID
+        FROM EnrolledDevices ed
+        JOIN Devices d ON ed.DeviceID = d.DeviceID
+        JOIN ServiceLocations sl ON ed.LocationID = sl.LocationID
+        WHERE sl.CustomerID = :customer_id 
+        AND ed.Status = 1
+    """)
+    result = db.session.execute(sql_query, {'customer_id': customer_id})
+    return [{'EnrolledDeviceID': row[0], 'Type': row[1], 'ModelNumber': row[2], 'LocationID': row[3]} for row in result]
+
+
+def get_active_devices(customer_id, location_id):
+    sql_query = text("""
+        SELECT ed.EnrolledDeviceID, d.Type, d.ModelNumber
+        FROM EnrolledDevices ed
+        JOIN Devices d ON ed.DeviceID = d.DeviceID
+        WHERE ed.LocationID = :location_id 
+        AND ed.Status = 1
+        AND EXISTS (
+            SELECT 1 FROM ServiceLocations sl 
+            WHERE sl.LocationID = ed.LocationID 
+            AND sl.CustomerID = :customer_id
+        )
+    """)
+    result = db.session.execute(sql_query, {'customer_id': customer_id, 'location_id': location_id})
+    return [{'EnrolledDeviceID': row[0], 'Type': row[1], 'ModelNumber': row[2]} for row in result]
+
+
 def list_devices_energy(customer_id, start_time, end_time):
     # Calculate the time range for the last 24 hours
     # end_time = datetime.now()
@@ -15,7 +45,7 @@ def list_devices_energy(customer_id, start_time, end_time):
     JOIN Customers c ON sl.CustomerID = c.CustomerID
     LEFT JOIN EnergyUsage eu ON ed.EnrolledDeviceID = eu.EnrolledDeviceID
     AND eu.Timestamp BETWEEN :start_time AND :end_time
-    WHERE c.CustomerID = :customer_id
+    WHERE c.CustomerID = :customer_id AND ed.Status = 1
     GROUP BY ed.EnrolledDeviceID, d.Type, d.ModelNumber
     """)
 
@@ -50,7 +80,10 @@ def add_device(customer_id, location_id, device_type, model_number):
             INSERT INTO EnrolledDevices (DeviceID, LocationID) VALUES (:device_id, :location_id)
         """)
         db.session.execute(insert_sql, {'device_id': device_id, 'location_id': location_id})
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
         return {'message': 'Device added successfully'}
     else:
         return {'message': 'Device type or model not found'}
@@ -61,10 +94,17 @@ def get_energy_consumption_per_device(location_id, start_date, end_date):
         FROM EnergyUsage e
         JOIN EnrolledDevices ed ON e.EnrolledDeviceID = ed.EnrolledDeviceID
         JOIN Devices d ON ed.DeviceID = d.DeviceID
-        WHERE ed.LocationID = :location_id AND e.Timestamp BETWEEN :start_date AND :end_date
+        WHERE ed.LocationID = :location_id AND e.Timestamp BETWEEN :start_date AND :end_date AND ed.Status = 1
         GROUP BY d.DeviceID, d.Type
     """)
     result = db.session.execute(sql_query, {'location_id': location_id, 'start_date': start_date, 'end_date': end_date})
     return [{'DeviceID': row[0], 'Type': row[1], 'TotalEnergy': row[2]} for row in result]
+
+def set_device_status(enrolled_device_id, status):
+    sql_query = text("UPDATE EnrolledDevices SET Status = :status WHERE EnrolledDeviceID = :enrolled_device_id")
+    db.session.execute(sql_query, {'enrolled_device_id': enrolled_device_id, 'status': status})
+    db.session.commit()
+    return {'message': 'Device status updated successfully'}
+
 
 

@@ -12,7 +12,10 @@ def add_customer(firebase_uid, first_name, last_name, billing_address):
         'last_name': last_name,
         'billing_address': billing_address
     })
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
     return {'message': 'Customer added successfully'}
 
 def get_all_customers():

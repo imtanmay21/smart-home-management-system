@@ -28,6 +28,7 @@ class ServiceLocations(db.Model):
     SquareFootage = db.Column(db.Integer, nullable=False)
     Bedrooms = db.Column(db.Integer, nullable=False)
     Occupants = db.Column(db.Integer, nullable=False)
+    Status = db.Column(db.Integer, default=1)
 
 
 class Manufacturer(db.Model):
@@ -52,6 +53,7 @@ class EnrolledDevices(db.Model):
     EnrolledDeviceID = db.Column(db.Integer, primary_key=True)
     DeviceID = db.Column(db.Integer, db.ForeignKey('Devices.DeviceID'), nullable=False)
     LocationID = db.Column(db.Integer, db.ForeignKey('ServiceLocations.LocationID'), nullable=False)
+    Status = db.Column(db.Integer, default=1)
 
 
 class DeviceEvents(db.Model):
