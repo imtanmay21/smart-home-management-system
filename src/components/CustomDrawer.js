@@ -15,30 +15,49 @@ import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Apartment, Kitchen, Person } from "@mui/icons-material";
+import { Profile } from "../pages/Profile";
 
 const drawerWidth = 240;
 
 const drawerItems = [
-  { itemLabel: "Profile", itemIcon: <Person /> },
-  { itemLabel: "Add Location", itemIcon: <Apartment /> },
-  { itemLabel: "Add Device", itemIcon: <Kitchen /> },
+  { itemLabel: "Profile", itemIcon: <Person color="secondary" /> },
+  { itemLabel: "Add Location", itemIcon: <Apartment color="secondary" /> },
+  { itemLabel: "Add Device", itemIcon: <Kitchen color="secondary" /> },
 ];
 
 export const CustomDrawer = ({ window, mainComponent }) => {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showComponent, setShowComponent] = useState("showcase");
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const drawer = (
-    <Box bgcolor={theme.palette.primary.main} sx={{ height: "100vh" }}>
-      <List>
+    <Box
+      bgcolor={theme.palette.primary.dark}
+      sx={{
+        height: "100vh",
+        borderRight: "1px solid",
+        borderColor: "#444444",
+      }}
+    >
+      {/* App header */}
+      <Box p="1rem">
+        <Typography variant="h4" color="secondary" fontWeight="600">
+          SHEMS
+        </Typography>
+      </Box>
+
+      <List sx={{ width: "100%" }}>
         {drawerItems.map((item, index) => (
           <ListItem key={index} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{item.itemIcon}</ListItemIcon>
+            <ListItemButton
+              onClick={() => setShowComponent(item.itemLabel)}
+              sx={{ borderBottom: "1px solid #444444", margin: "0.5rem" }}
+            >
+              <ListItemIcon color="secondary">{item.itemIcon}</ListItemIcon>
               <Typography color="secondary">{item.itemLabel}</Typography>
             </ListItemButton>
           </ListItem>
@@ -115,9 +134,7 @@ export const CustomDrawer = ({ window, mainComponent }) => {
         </Drawer>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: "500px" }}>
-        <Typography variant="h2" color="secondary">
-          
-        </Typography>
+        {showComponent === "Profile" && <Profile />}
       </Box>
     </Box>
   );
