@@ -1,25 +1,36 @@
 import { useTheme } from "@emotion/react";
 import { AccountCircle } from "@mui/icons-material";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
+import { logout } from "../queries/userQueries";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 export const Profile = () => {
+  const { user } = useSelector((state) => state.UserReducer);
+
   const theme = useTheme();
+  const navigation = useNavigate();
 
   const profileData = [
     {
       label: "First Name",
-      value: "Tanmay",
+      value: user?.firstName,
     },
     {
       label: "Last Name",
-      value: "Mandal",
+      value: user?.lastName,
     },
     {
       label: "Billing Address",
-      value: "4802 4th Avenue 3R",
+      value: user?.billingAddress,
     },
   ];
+
+  const logoutUser = async () => {
+    await logout();
+    navigation("/login")
+  }
 
   return (
     <Stack
@@ -72,6 +83,9 @@ export const Profile = () => {
               </Box>
             </Stack>
           ))}
+          <Button onClick={logoutUser} variant="contained" sx={{ width: "80%" }}>
+            Logout
+          </Button>
         </Stack>
       </Stack>
     </Stack>

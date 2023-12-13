@@ -18,6 +18,7 @@ export const Signup = () => {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [billingAddress, setBillingAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userAuthError, setUserAuthError] = useState("");
@@ -30,8 +31,6 @@ export const Signup = () => {
   const validateInputFields = () => {
     // Validate email field
     const isEmailValid = email.toLowerCase().match(validEmailRegex);
-
-    console.log("is email valid", email)
 
     // Validate password field
     const isPasswordValid = password.length > 8;
@@ -52,7 +51,14 @@ export const Signup = () => {
       setConfirmPasswordError("Passwords do not match");
     }
 
-    return isEmailValid && isPasswordValid && isConfirmPasswordValid;
+    return (
+      isEmailValid &&
+      isPasswordValid &&
+      isConfirmPasswordValid &&
+      firstName !== "" &&
+      lastName !== "" &&
+      billingAddress !== ""
+    );
   };
 
   // Handle Sign up in the form
@@ -70,21 +76,19 @@ export const Signup = () => {
     if (validateInputFields()) {
       try {
         // Signup user
-        await signUp(email, password, dispatch);
-        
+        await signUp(email, password, firstName, lastName, billingAddress, dispatch);
+
         // Navigate to dashboard
-        navigation("/")
+        navigation("/");
       } catch (error) {
         // Setup user auth error
-        setUserAuthError(error.message)
+        setUserAuthError(error.message);
       }
     }
   };
 
   // Navigate the user to go to dashboard
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <CustomContainer>
@@ -132,7 +136,7 @@ export const Signup = () => {
               variant="outlined"
               label="First Name"
               color="secondary"
-              error={emailError !== ""}
+              error={firstName === ""}
               onChange={(e) => setFirstName(e.target.value)}
             />
           </Box>
@@ -142,8 +146,18 @@ export const Signup = () => {
               variant="outlined"
               label="Last Name"
               color="secondary"
-              error={emailError !== ""}
+              error={lastName === ""}
               onChange={(e) => setLastName(e.target.value)}
+            />
+          </Box>
+
+          <Box>
+            <TextField
+              variant="outlined"
+              label="Billing Address"
+              color="secondary"
+              error={billingAddress === ""}
+              onChange={(e) => setBillingAddress(e.target.value)}
             />
           </Box>
 

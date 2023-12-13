@@ -10,7 +10,7 @@ export const Dashboard = () => {
 
   const MainComponent = (
     <Stack>
-      <Typography>Dashboard</Typography>
+      <Typography>Dashboard  </Typography>
     </Stack>
   )
 

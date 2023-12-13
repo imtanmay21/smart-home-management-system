@@ -4,6 +4,7 @@ from routes.customer_routes import customer_blueprint
 from routes.device_routes import device_blueprint
 from routes.location_routes import location_blueprint
 from routes.energy_routes import energy_blueprint
+from flask_cors import CORS
 from urllib.parse import quote
 
 app = Flask(__name__)
@@ -19,6 +20,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{encoded_password
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+
+# Enable CORS for all routes
+CORS(app)
 
 # Register Blueprints
 app.register_blueprint(customer_blueprint, url_prefix='/customers')

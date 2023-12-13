@@ -44,9 +44,10 @@ export const Login = () => {
     // Validate form fields
     if (validateFields()) {
       try {
-        await login(email, password);
+        await login(email, password, dispatch);
         navigation("/")
       } catch (error) {
+        console.log(error)
         setUserAuthError(error.message);
       }
     }
