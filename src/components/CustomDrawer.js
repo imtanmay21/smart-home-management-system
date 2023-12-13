@@ -16,13 +16,14 @@ import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
 import { Apartment, Kitchen, Person } from "@mui/icons-material";
 import { Profile } from "../pages/Profile";
+import { Locations } from "../pages/Locations";
 
 const drawerWidth = 240;
 
 const drawerItems = [
   { itemLabel: "Profile", itemIcon: <Person color="secondary" /> },
-  { itemLabel: "Add Location", itemIcon: <Apartment color="secondary" /> },
-  { itemLabel: "Add Device", itemIcon: <Kitchen color="secondary" /> },
+  { itemLabel: "Locations", itemIcon: <Apartment color="secondary" /> },
+  { itemLabel: "Devices", itemIcon: <Kitchen color="secondary" /> },
 ];
 
 export const CustomDrawer = ({ window, mainComponent }) => {
@@ -135,6 +136,7 @@ export const CustomDrawer = ({ window, mainComponent }) => {
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3, width: "500px" }}>
         {showComponent === "Profile" && <Profile />}
+        {showComponent === "Locations" && <Locations />}
       </Box>
     </Box>
   );

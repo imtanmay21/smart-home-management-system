@@ -4,7 +4,7 @@ from services.location_service import get_service_locations, add_service_locatio
 location_blueprint = Blueprint('location_blueprint', __name__)
 
 # List Service locations of a customer
-@location_blueprint.route('/<int:customer_id>/list', methods=['GET'])
+@location_blueprint.route('/<string:customer_id>/list', methods=['GET'])
 def list_locations(customer_id):
     try:
         locations = get_service_locations(customer_id)
@@ -14,7 +14,7 @@ def list_locations(customer_id):
     
 
 # Add Service locations for a customer
-@location_blueprint.route('/<int:customer_id>/add', methods=['POST'])
+@location_blueprint.route('/<string:customer_id>/add', methods=['POST'])
 def add_location(customer_id):
     try:
         location_data = request.get_json()
