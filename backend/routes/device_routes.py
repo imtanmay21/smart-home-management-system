@@ -30,10 +30,10 @@ def list_models():
 # Get all active devices of customer at a particular serviceLocation    
 @device_blueprint.route('/active-devices', methods=['GET'])
 def get_active_devices_route():
-    customer_id = request.args.get('customer_id', type=int)
+    customer_id = request.args.get('customer_id', type=str)
     location_id = request.args.get('location_id', type=int)
 
-    if not customer_id or not isinstance(customer_id, int) or not location_id or not isinstance(location_id, int):
+    if not customer_id or not isinstance(customer_id, str) or not location_id or not isinstance(location_id, int):
         return jsonify({"error": "Invalid customer or location ID"}), 400
 
     try:
