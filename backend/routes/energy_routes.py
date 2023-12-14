@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.energy_service import get_peak_time_usage_and_savings, get_comparative_energy_consumption_timebased, get_comparative_energy_consumption
+from services.energy_service import get_peak_time_usage_and_savings, get_comparative_energy_consumption_timebased, get_comparative_energy_consumption, get_energy_consumption_per_location_for_customer, get_monthly_energy_consumption
 from datetime import datetime
 
 energy_blueprint = Blueprint('energy_blueprint', __name__)
@@ -71,5 +71,27 @@ def compare_energy_consumption_timebased():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@energy_blueprint.route('/customer/<string:customer_id>/energy-per-location', methods=['GET'])
+def energy_per_location_for_customer(customer_id):
+    try:
+        energy_data = get_energy_consumption_per_location_for_customer(customer_id)
+        return jsonify(energy_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# monthly energy consumption for a location over time    
+@energy_blueprint.route('/monthly-energy-consumption', methods=['GET'])
+def monthly_energy_consumption():
+    location_id = request.args.get('location_id', type=int)
+    if not location_id:
+        return jsonify({"error": "Location ID is required"}), 400
+
+    try:
+        energy_data = get_monthly_energy_consumption(location_id)
+        return jsonify(energy_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 

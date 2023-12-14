@@ -54,3 +54,31 @@ def get_comparative_energy_consumption(square_footage, occupants):
     })
     average_energy = result.scalar()
     return {'AverageEnergy': average_energy}
+
+
+def get_energy_consumption_per_location_for_customer(customer_id):
+    sql_query = text("""
+        SELECT sl.LocationID, sl.Street, SUM(eu.kWh) as TotalEnergy
+        FROM EnergyUsage eu
+        JOIN EnrolledDevices ed ON eu.EnrolledDeviceID = ed.EnrolledDeviceID
+        JOIN ServiceLocations sl ON ed.LocationID = sl.LocationID
+        WHERE sl.CustomerID = :customer_id AND ed.Status = 1
+        GROUP BY sl.LocationID, sl.Street
+    """)
+    result = db.session.execute(sql_query, {'customer_id': customer_id})
+    return [{'LocationID': row[0], 'Street': row[1], 'TotalEnergy': row[2]} for row in result]
+
+def get_monthly_energy_consumption(location_id):
+    sql_query = text("""
+        SELECT DATE_FORMAT(eu.Timestamp, '%Y-%m') as MonthYear, SUM(eu.kWh) as TotalEnergy
+        FROM EnergyUsage eu
+        JOIN EnrolledDevices ed ON eu.EnrolledDeviceID = ed.EnrolledDeviceID
+        WHERE ed.LocationID = :location_id
+        GROUP BY DATE_FORMAT(eu.Timestamp, '%Y-%m')
+        ORDER BY MonthYear
+    """)
+    result = db.session.execute(sql_query, {'location_id': location_id})
+    return [{'MonthYear': row[0], 'TotalEnergy': row[1]} for row in result]
+
+
+

@@ -37,7 +37,7 @@ def add_new_customer():
     
 
 # Get customer By ID
-@customer_blueprint.route('/<int:customer_id>')
+@customer_blueprint.route('/<string:customer_id>')
 def customer_details(customer_id):
     try:
         customer = get_customer_by_id(customer_id)

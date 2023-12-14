@@ -5,7 +5,7 @@ db = SQLAlchemy()
 class Customers(db.Model):
     __tablename__ = 'Customers'
 
-    CustomerID = db.Column(db.Integer, primary_key=True)
+    CustomerID = db.Column(db.String(255), primary_key=True)
     FirstName = db.Column(db.String(255), nullable=False)
     LastName = db.Column(db.String(255), nullable=False)
     BillingAddress = db.Column(db.String(255), nullable=False)
@@ -18,7 +18,7 @@ class ServiceLocations(db.Model):
     __tablename__ = 'ServiceLocations'
 
     LocationID = db.Column(db.Integer, primary_key=True)
-    CustomerID = db.Column(db.Integer, db.ForeignKey('Customers.CustomerID'), nullable=False)
+    CustomerID = db.Column(db.String(255), db.ForeignKey('Customers.CustomerID'), nullable=False)
     Apt_no = db.Column(db.String(50), nullable=False)
     Street = db.Column(db.String(255), nullable=False)
     City = db.Column(db.String(255), nullable=False)
