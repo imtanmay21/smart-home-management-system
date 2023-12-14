@@ -79,7 +79,7 @@ def add_new_device():
     
 
 # Energy consunption of device in last 24 hours    
-@device_blueprint.route('/customer/<int:customer_id>/devices_energy_24_hours', methods=['GET'])
+@device_blueprint.route('/customer/<string:customer_id>/devices_energy_24_hours', methods=['GET'])
 def get_devices_energy_24_hours(customer_id):
     try:
         end_time = datetime.now()
@@ -90,7 +90,7 @@ def get_devices_energy_24_hours(customer_id):
         return jsonify({"error": str(e)}), 500
 
 # Energy consunption of device in last week    
-@device_blueprint.route('/customer/<int:customer_id>/devices_energy_week', methods=['GET'])
+@device_blueprint.route('/customer/<string:customer_id>/devices_energy_week', methods=['GET'])
 def get_devices_energy_week(customer_id):
     try:
         end_time = datetime.now()
@@ -102,7 +102,7 @@ def get_devices_energy_week(customer_id):
     
 
 # Energy consunption of device in last 30 days        
-@device_blueprint.route('/customer/<int:customer_id>/devices_energy_month', methods=['GET'])
+@device_blueprint.route('/customer/<string:customer_id>/devices_energy_month', methods=['GET'])
 def get_devices_energy_month(customer_id):
     try:
         end_time = datetime.now()
@@ -113,7 +113,7 @@ def get_devices_energy_month(customer_id):
         return jsonify({"error": str(e)}), 500
     
 # Energy consunption of device in last year    
-@device_blueprint.route('/customer/<int:customer_id>/devices_energy_year', methods=['GET'])
+@device_blueprint.route('/customer/<string:customer_id>/devices_energy_year', methods=['GET'])
 def get_devices_energy_year(customer_id):
     try:
         end_time = datetime.now()

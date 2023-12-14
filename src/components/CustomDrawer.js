@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Button,
   CssBaseline,
   Drawer,
   IconButton,
@@ -14,10 +15,13 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { useTheme } from "@emotion/react";
-import { Apartment, Kitchen, Person } from "@mui/icons-material";
+import { Apartment, BarChart, Kitchen, Person } from "@mui/icons-material";
 import { Profile } from "../pages/Profile";
 import { Locations } from "../pages/Locations";
 import { Devices } from "../pages/Devices";
+import { Showcase } from "../pages/Showcase";
+import { Chart1 } from "../pages/Chart1";
+import { Chart2 } from "../pages/Chart2";
 
 const drawerWidth = 240;
 
@@ -25,12 +29,14 @@ const drawerItems = [
   { itemLabel: "Profile", itemIcon: <Person color="secondary" /> },
   { itemLabel: "Locations", itemIcon: <Apartment color="secondary" /> },
   { itemLabel: "Devices", itemIcon: <Kitchen color="secondary" /> },
+  { itemLabel: "Chart-1", itemIcon: <BarChart color="secondary" />},
+  { itemLabel: "Chart-2", itemIcon: <BarChart color="secondary" />}
 ];
 
 export const CustomDrawer = ({ window, mainComponent }) => {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showComponent, setShowComponent] = useState("showcase");
+  const [showComponent, setShowComponent] = useState("Profile");
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
@@ -46,8 +52,21 @@ export const CustomDrawer = ({ window, mainComponent }) => {
       }}
     >
       {/* App header */}
-      <Box p="1rem">
-        <Typography variant="h4" color="secondary" fontWeight="600">
+      <Box
+        sx={{
+          "&:hover": {
+            cursor: "pointer",
+          },
+        }}
+        p="1rem"
+        onClick={() => setShowComponent("showcase")}
+      >
+        <Typography
+          textAlign="left"
+          variant="h4"
+          color="secondary"
+          fontWeight="600"
+        >
           SHEMS
         </Typography>
       </Box>
@@ -139,6 +158,9 @@ export const CustomDrawer = ({ window, mainComponent }) => {
         {showComponent === "Profile" && <Profile />}
         {showComponent === "Locations" && <Locations />}
         {showComponent === "Devices" && <Devices />}
+        {showComponent === "showcase" && <Showcase />}
+        {showComponent === "Chart-1" && <Chart1 />}
+        {showComponent === "Chart-2" && <Chart2 />}
       </Box>
     </Box>
   );

@@ -17,7 +17,9 @@ export const PrivateRoute = ({ redirectTo = "/login", children }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user)
-      setUserData(user.uid, dispatch)
+      if (user) {
+        setUserData(user.uid, dispatch)
+      }
       setLoading(false);
     });
 

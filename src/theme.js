@@ -71,6 +71,18 @@ const theme = createTheme({
         },
       },
     },
+
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          "& fieldset": {
+            borderColor: "#EEEEEE",
+          },
+          color: "#EEEEEE",
+          borderColor: "#EEEEEE"
+        }
+      }
+    }
   },
 });
 
