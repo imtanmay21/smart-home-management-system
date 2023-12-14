@@ -9,10 +9,9 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import moment from "moment";
+
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { getDevicesEnergy24Hours, getDevicesEnergyMonth, getDevicesEnergyWeek, getDevicesEnergyYear, getEnergyPerDeviceAtLocation } from "../queries/chartQueries";
@@ -62,6 +61,7 @@ export const Chart2 = () => {
   const theme = useTheme();
 
   const [selectedTimeFrame, setSelectedTimeFrame] = useState("24");
+  const [barData, setBarData] = useState([])
 
   const drawChart = async () => {
     try {
@@ -77,6 +77,16 @@ export const Chart2 = () => {
       }
 
       console.log("response data", responseData);
+
+      const filteredData = responseData.map((data) => {
+        return {
+          deviceLabel: `${data.Type}-${data.EnrolledDeviceID}`,
+          TotalEnergy: data.TotalEnergy
+        }
+      })
+
+      setBarData(filteredData)
+
     } catch (error) {
       console.log(error);
     }
@@ -120,13 +130,13 @@ export const Chart2 = () => {
         </Stack>
 
         <Stack alignItems="center" justifyContent="center">
-          <BarChart width={1000} height={400} data={data}>
+          <BarChart width={1000} height={400} data={barData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="deviceLabel" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="pv" fill={theme.palette.primary.main} />
+            <Bar dataKey="TotalEnergy" fill={theme.palette.primary.main} />
           </BarChart>
         </Stack>
       </Stack>

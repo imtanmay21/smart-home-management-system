@@ -13,11 +13,11 @@ app = Flask(__name__)
 password = 'tanmay@2112'
 encoded_password = quote(password, safe='')
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{encoded_password}@localhost:3306/SHEMS'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{encoded_password}@localhost:3306/SHEMS'
 
 # Database configuration
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:tanmay@2112@localhost:3306/SHEMS'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/SHEMS'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/SHEMS'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)

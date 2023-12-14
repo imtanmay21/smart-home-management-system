@@ -59,10 +59,11 @@ const data = [
 
 export const Chart1 = () => {
   const { locations } = useSelector((state) => state.LocationReducer);
-  const theme = useTheme()
+  const theme = useTheme();
 
+  const [barData, setBarData] = useState([]);
   const [selectedLocationID, setSelectedLocationID] = useState(
-    locations[0].LocationID
+    locations.length > 0 ? locations[0].LocationID : null
   );
   const [startDate, setStartDate] = useState(
     dayjs(moment().format("YYYY-MM-DD"))
@@ -76,6 +77,14 @@ export const Chart1 = () => {
         moment(startDate.format("YYYY-MM-DD")),
         moment(endDate.format("YYYY-MM-DD"))
       );
+
+      const filteredData = responseData.map((data) => ({
+        deviceLabel: `${data.Type}-${data.DeviceID}`,
+        TotalEnergy: data.TotalEnergy,
+      }));
+      setBarData(filteredData);
+
+      console.log("response data", responseData);
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +97,7 @@ export const Chart1 = () => {
           Energy Consumption per device at a location
         </Typography>
 
-        <Stack direction="row" justifyContent="space-between">
+        {locations.length > 0 && <Stack direction="row" justifyContent="space-between">
           <FormControl
             variant="outlined"
             sx={{ width: 200, borderColor: "#FFFFFF" }}
@@ -123,7 +132,7 @@ export const Chart1 = () => {
             value={endDate}
             onChange={(newValue) => setEndDate(newValue)}
           />
-        </Stack>
+        </Stack>}
 
         <Stack alignItems="flex-end" justifyItems="center">
           <Box width={200}>
@@ -134,15 +143,15 @@ export const Chart1 = () => {
         </Stack>
 
         <Stack alignItems="center" justifyContent="center">
-          <BarChart width={1000} height={400} data={data}>
+          <BarChart width={1000} height={400} data={barData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
+            <XAxis dataKey="deviceLabel" />
+            <YAxis domain={[0, 60]} />
             <Tooltip />
             <Legend />
-            <Bar dataKey="pv" fill={theme.palette.primary.main} />
+            <Bar dataKey="TotalEnergy" fill={theme.palette.primary.main} />
           </BarChart>
-        </Stack>
+        </Stack> 
       </Stack>
     </LocalizationProvider>
   );

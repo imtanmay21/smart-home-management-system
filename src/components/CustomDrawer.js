@@ -22,6 +22,8 @@ import { Devices } from "../pages/Devices";
 import { Showcase } from "../pages/Showcase";
 import { Chart1 } from "../pages/Chart1";
 import { Chart2 } from "../pages/Chart2";
+import { Chart3 } from "../pages/Chart3";
+import { Chart4 } from "../pages/Chart4";
 
 const drawerWidth = 240;
 
@@ -30,7 +32,9 @@ const drawerItems = [
   { itemLabel: "Locations", itemIcon: <Apartment color="secondary" /> },
   { itemLabel: "Devices", itemIcon: <Kitchen color="secondary" /> },
   { itemLabel: "Chart-1", itemIcon: <BarChart color="secondary" />},
-  { itemLabel: "Chart-2", itemIcon: <BarChart color="secondary" />}
+  { itemLabel: "Chart-2", itemIcon: <BarChart color="secondary" />},
+  { itemLabel: "Chart-3", itemIcon: <BarChart color="secondary" />},
+  { itemLabel: "Chart-4", itemIcon: <BarChart color="secondary" />},
 ];
 
 export const CustomDrawer = ({ window, mainComponent }) => {
@@ -161,6 +165,8 @@ export const CustomDrawer = ({ window, mainComponent }) => {
         {showComponent === "showcase" && <Showcase />}
         {showComponent === "Chart-1" && <Chart1 />}
         {showComponent === "Chart-2" && <Chart2 />}
+        {showComponent === "Chart-3" && <Chart3 />}
+        {showComponent === "Chart-4" && <Chart4 />}
       </Box>
     </Box>
   );
